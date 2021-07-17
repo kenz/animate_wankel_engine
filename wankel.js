@@ -1,73 +1,90 @@
-const WIDTH = 500;
-const HEIGHT = 500;
-const CENTER_X = WIDTH / 2;
-const CENTER_Y = HEIGHT / 2;
+let canvas = document.getElementById('canvas');
+let context = canvas.getContext('2d');
 
 const RATE = 1000;
-const ROTARY_SIZE = 200;
-const DEFLECTION = (2 / Math.sqrt(3) - 1) * ROTARY_SIZE;
-const DISTANCE_OF_GRAVITY = ROTARY_SIZE / Math.sqrt(3);
+let rotarySize = 200;
+let deflection = (2 / Math.sqrt(3) - 1) * rotarySize;
+let distanceOfGravity = rotarySize / Math.sqrt(3);
 
+let canvasDiv = document.getElementById('canvas_div');
+let width;
+let height;
+let centerX;
+let centerY;
 
-const canvas = document.getElementById('canvas');
-canvas.width = WIDTH;
-canvas.height = HEIGHT;
-const context = canvas.getContext('2d');
+function resetScreenSize() {
+    width = canvas.width = canvasDiv.offsetWidth;
+    height = canvas.height = canvasDiv.offsetHeight;
+    centerX = width / 2;
+    centerY = height / 2;
+    narrow = Math.min(width, height);
+    rotarySize = narrow / 2;
+    deflection = (2 / Math.sqrt(3) - 1) * rotarySize;
+    distanceOfGravity = rotarySize / Math.sqrt(3);
+}
+resetScreenSize();
 
+window.addEventListener('DOMContentLoaded', function () {
+    window.addEventListener('resize', resetScreenSize);
+});
 
-// 各円を描画する。
+// ハウジングを描画する
 function drawBackground() {
     context.beginPath();
     context.strokeStyle = 'rgba(0, 0, 0)';
     for (i = 0; i < Math.PI / 1; i += 0.001) {
         inAngle = i * 6;
         outAngle = i * 2 + Math.PI;
-        const baseX = Math.cos(inAngle) * DEFLECTION / 2 + CENTER_X;
-        const baseY = Math.sin(inAngle) * DEFLECTION / 2 + CENTER_Y;
-        const x = baseX + Math.cos(outAngle) * DISTANCE_OF_GRAVITY;
-        const y = baseY + Math.sin(outAngle) * DISTANCE_OF_GRAVITY;
+        let baseX = Math.cos(inAngle) * deflection / 2 + centerX;
+        let baseY = Math.sin(inAngle) * deflection / 2 + centerY;
+        let x = baseX + Math.cos(outAngle) * distanceOfGravity;
+        let y = baseY + Math.sin(outAngle) * distanceOfGravity;
         context.lineTo(x, y);
     }
+    context.moveTo(centerX + deflection / 2, centerY);
+    context.arc(centerX, centerY, deflection / 2, 0, 2 * Math.PI);
     context.closePath();
     context.stroke();
 }
 
 function drawAnimation(timestamp) {
-    context.clearRect(0, 0, WIDTH, HEIGHT);
-    drawBackground(context);
-    step = timestamp / RATE % Math.PI;
-    inAngle = step * 6;
-    outAngle = step * 2;
-    const baseX = Math.cos(inAngle) * DEFLECTION / 2 + CENTER_X;
-    const baseY = Math.sin(inAngle) * DEFLECTION / 2 + CENTER_Y;
-    outAngle1 = outAngle + Math.PI;
-    outAngle2 = outAngle1 + Math.PI * 2 / 3;
-    outAngle3 = outAngle2 + Math.PI * 2 / 3;
-    context.fillStyle = 'rgb(0, 0, 0)';
-    context.strokeStyle = 'rgba(0, 0, 0, 0)';
+    context.clearRect(0, 0, width, height);
+    drawBackground();
+    angle = timestamp / RATE % Math.PI * 2;
+    let inAngle = angle * 3;
+    let baseX = Math.cos(inAngle) * deflection / 2 + centerX;
+    let baseY = Math.sin(inAngle) * deflection / 2 + centerY;
+    let angle1 = angle + Math.PI;
+    let angle2 = angle1 + Math.PI * 2 / 3;
+    let angle3 = angle2 + Math.PI * 2 / 3;
+
     context.beginPath();
+    context.fillStyle = 'rgb(255, 0, 0)';
     context.arc(baseX, baseY, 2, 0, 2 * Math.PI);
     context.fill();
-    drawLine(baseX, baseY, outAngle1);
-    drawLine(baseX, baseY, outAngle2);
-    drawLine(baseX, baseY, outAngle3);
+
+    context.beginPath();
+    context.strokeStyle = 'rgb(0, 0, 0)';
+    context.arc(baseX, baseY, deflection, 0, Math.PI * 2);
+    context.stroke();
+
+    drawLine(baseX, baseY, angle1);
+    drawLine(baseX, baseY, angle2);
+    drawLine(baseX, baseY, angle3);
     window.requestAnimationFrame(drawAnimation);
 }
 function drawLine(baseX, baseY, angle) {
     context.fillStyle = 'rgb(0, 0, 0)';
-    context.strokeStyle = 'rgba(0, 0, 0, 0)';
-    const x = baseX + Math.cos(angle) * DISTANCE_OF_GRAVITY;
-    const y = baseY + Math.sin(angle) * DISTANCE_OF_GRAVITY;
+    const x = baseX + Math.cos(angle) * distanceOfGravity;
+    const y = baseY + Math.sin(angle) * distanceOfGravity;
     context.beginPath();
     context.arc(x, y, 2, 0, 2 * Math.PI);
     context.fill();
     context.beginPath();
-    context.fillStyle = 'rgba(0, 0, 0, 0)';
     context.strokeStyle = 'rgb(0, 0, 0)';
-    context.arc(x, y, ROTARY_SIZE, angle + (Math.PI * 5 / 6), angle + (Math.PI * 7 / 6));
+    context.arc(x, y, rotarySize, angle + (Math.PI * 5 / 6), angle + (Math.PI * 7 / 6));
 
     context.stroke();
 }
 
-drawBackground();
 window.requestAnimationFrame(drawAnimation);
