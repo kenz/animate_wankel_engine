@@ -48,7 +48,7 @@ window.addEventListener('DOMContentLoaded', function () {
 window.requestAnimationFrame(drawAnimation);
 function drawAnimation(timestamp) {
     context.clearRect(0, 0, width, height);
-    //   drawHousing();
+    drawHousing();
     drawRotary(timestamp);
     window.requestAnimationFrame(drawAnimation);
 }
@@ -56,16 +56,16 @@ function drawAnimation(timestamp) {
 // ハウジングを描画する
 function drawHousing() {
     context.beginPath();
-    context.strokeStyle = 'rgb(0, 0, 0)';
-    for (rotaryAngle = 0; rotaryAngle < ANGLE_360; rotaryAngle += 0.001) {
+    context.strokeStyle = 'rgb(128, 128, 128)';
+    context.arc(centerX, centerY, lengthDeflection, 0, ANGLE_360);
+    context.stroke();
+    context.beginPath();
+    for (rotaryAngle = 0; rotaryAngle < ANGLE_360; rotaryAngle += 0.01) {
         let shaftAngle = (rotaryAngle + ANGLE_180) * 3;
         let x = (Math.cos(shaftAngle) * lengthDeflection) + (Math.cos(rotaryAngle) * lengthCornerGravity) + centerX;
         let y = (Math.sin(shaftAngle) * lengthDeflection) + (Math.sin(rotaryAngle) * lengthCornerGravity) + centerY;
         context.lineTo(x, y);
     }
-    context.stroke();
-    context.beginPath();
-    context.arc(centerX, centerY, lengthDeflection, 0, ANGLE_360);
     context.closePath();
     context.stroke();
 }
