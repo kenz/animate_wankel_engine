@@ -42,7 +42,7 @@ function resetScreenSize() {
 }
 resetScreenSize();
 
-window.addEventListener('DOMContentLoaded', function () {
+window.addEventListener('DOMContentLoaded', () => {
     window.addEventListener('resize', resetScreenSize);
 });
 
