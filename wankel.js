@@ -31,6 +31,7 @@ function resetScreenSize() {
     width = canvas.width = canvasDiv.offsetWidth;
     height = canvas.height = canvasDiv.offsetHeight;
     context = canvas.getContext('2d');
+    context.lineWidth = 4;
     // 高さと幅の内狭い方をもとに全体のサイズを決める
     centerX = width / 2;
     centerY = height / 2;
@@ -72,16 +73,16 @@ function drawHousing() {
 
 // ロータリーを描画する。
 function drawRotary(timestamp) {
-    let corner1angle = timestamp / RATE % ANGLE_360;
-    let corner2angle = corner1angle + ANGLE_120;
-    let corner3angle = corner2angle + ANGLE_120;
-    let shaftAngle = (corner1angle + ANGLE_180) * 3;
+    let corner1Angle = timestamp / RATE % ANGLE_360;
+    let corner2Angle = corner1Angle + ANGLE_120;
+    let corner3Angle = corner2Angle + ANGLE_120;
+    let shaftAngle = (corner1Angle + ANGLE_180) * 3;
     let baseX = Math.cos(shaftAngle) * lengthDeflection + centerX;
     let baseY = Math.sin(shaftAngle) * lengthDeflection + centerY;
 
     context.beginPath();
     context.fillStyle = 'rgb(255, 0, 0)';
-    context.arc(baseX, baseY, 2, 0, ANGLE_360);
+    context.arc(baseX, baseY, 4, 0, ANGLE_360);
     context.fill();
 
     context.beginPath();
@@ -89,9 +90,9 @@ function drawRotary(timestamp) {
     context.arc(baseX, baseY, lengthDeflection * 2, 0, ANGLE_360);
     context.stroke();
 
-    drawSide(baseX, baseY, corner1angle, 'rgb(255,0,0)');
-    drawSide(baseX, baseY, corner2angle, 'rgb(0,128,0');
-    drawSide(baseX, baseY, corner3angle, 'rgb(0,128,255)');
+    drawSide(baseX, baseY, corner1Angle, 'rgb(255,0,0)');
+    drawSide(baseX, baseY, corner2Angle, 'rgb(0,128,0');
+    drawSide(baseX, baseY, corner3Angle, 'rgb(0,128,255)');
 
 }
 
