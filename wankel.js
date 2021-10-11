@@ -49,6 +49,7 @@ window.addEventListener('DOMContentLoaded', () => {
 window.requestAnimationFrame(drawAnimation);
 function drawAnimation(timestamp) {
     context.clearRect(0, 0, width, height);
+
     drawHousing();
     drawRotary(timestamp);
     window.requestAnimationFrame(drawAnimation);
